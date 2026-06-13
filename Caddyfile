@@ -1,0 +1,5 @@
+# Caddy holt und erneuert das Let's-Encrypt-Zertifikat fuer diesen Namen automatisch,
+# sobald DNS auf den Server zeigt und Port 80/443 erreichbar sind.
+api.codedbyme.de {
+	reverse_proxy app:8000
+}

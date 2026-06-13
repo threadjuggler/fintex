@@ -1,0 +1,3 @@
+# Lose Mindestversionen fuer das Hello-World. Beim echten Stack pinnen wir exakt.
+fastapi>=0.115
+uvicorn[standard]>=0.30

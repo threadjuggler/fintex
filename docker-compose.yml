@@ -1,0 +1,27 @@
+services:
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      # caddy_data persistiert die Zertifikate + den ACME-Account ueber Neustarts hinweg
+      # (sonst werden bei jedem Start neue Zertifikate angefragt -> Let's-Encrypt-Limits).
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - app
+
+  app:
+    build: ./app
+    restart: unless-stopped
+    # KEIN "ports:" - die App ist nur intern ueber das Compose-Netz erreichbar.
+    # Nur Caddy ist oeffentlich; es proxyt intern an app:8000.
+    expose:
+      - "8000"
+
+volumes:
+  caddy_data:
+  caddy_config:
