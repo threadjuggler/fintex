@@ -1,0 +1,3 @@
+# Test-/Entwickler-Abhaengigkeiten (nicht im Laufzeit-Image).
+pytest>=8.0
+httpx>=0.27

@@ -1,0 +1,2 @@
+rsync -av --exclude='.git' --exclude='instructions' --exclude='__pycache__' \
+  /home/bov/python/fintex/ deploy@api.codedbym.de:~/fintex/

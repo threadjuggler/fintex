@@ -14,6 +14,40 @@ services:
     depends_on:
       - app
 
+  kosit:
+    build: ./kosit
+    restart: unless-stopped
+    # KoSIT-Validator-Sidecar. Nur intern erreichbar; die app spricht ihn
+    # ueber das Compose-Netz unter http://kosit:8080 an.
+    expose:
+      - "8080"
+
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    # Speichert NUR gehashte API-Keys + Nutzungs-Metadaten (Zero-Retention),
+    # niemals Rechnungsinhalte.
+    environment:
+      POSTGRES_USER: einvoice
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      POSTGRES_DB: einvoice
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U einvoice"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
   app:
     build: ./app
     restart: unless-stopped
@@ -21,7 +55,22 @@ services:
     # Nur Caddy ist oeffentlich; es proxyt intern an app:8000.
     expose:
       - "8000"
+    environment:
+      KOSIT_URL: "http://kosit:8080"
+      DATABASE_URL: "postgresql://einvoice:${POSTGRES_PASSWORD:-changeme}@postgres:5432/einvoice"
+      REDIS_URL: "redis://redis:6379/0"
+      # Initialer API-Key beim Start (leer = keiner). In Prod via .env setzen.
+      BOOTSTRAP_API_KEY: "${BOOTSTRAP_API_KEY:-}"
+      RATE_LIMIT_PER_MIN: "${RATE_LIMIT_PER_MIN:-120}"
+    depends_on:
+      kosit:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
 
 volumes:
   caddy_data:
   caddy_config:
+  pg_data:

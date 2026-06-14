@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>einvoice-core — E-Rechnung als API</title>
+<style>
+  :root{
+    --ink:#1a2330; --muted:#5b6675; --line:#e3e8ef;
+    --brand:#0b6b5b; --brand-soft:#e7f3f0; --accent:#0d7a8a;
+    --code-bg:#0f1b2a; --code-ink:#d8e6f5;
+  }
+  *{box-sizing:border-box;}
+  @page{ size:A4; margin:14mm 14mm; }
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink); font-size:10.5pt; line-height:1.5;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+  h1,h2,h3{line-height:1.2;margin:0;}
+  p{margin:0 0 6pt;}
+  .muted{color:var(--muted);}
+  .small{font-size:9pt;}
+
+  /* Hero */
+  .hero{
+    background:linear-gradient(135deg,var(--brand) 0%,var(--accent) 100%);
+    color:#fff; border-radius:10px; padding:22pt 24pt; margin-bottom:16pt;
+  }
+  .brand{font-size:11pt; letter-spacing:.12em; text-transform:uppercase; opacity:.9; margin-bottom:8pt;}
+  .hero h1{font-size:26pt; margin-bottom:8pt; font-weight:800;}
+  .hero p{font-size:12pt; opacity:.96; margin:0; max-width:46em;}
+  .badges{display:flex; gap:8pt; margin-top:16pt; flex-wrap:wrap;}
+  .badge{
+    background:rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.35);
+    border-radius:999px; padding:5pt 12pt; font-size:9.5pt; font-weight:600;
+  }
+
+  .section-title{
+    font-size:13pt; font-weight:800; color:var(--brand);
+    margin:0 0 8pt; padding-bottom:4pt; border-bottom:2px solid var(--brand-soft);
+  }
+  .block{margin-bottom:14pt;}
+
+  .cols{display:flex; gap:12pt;}
+  .card{
+    flex:1; border:1px solid var(--line); border-radius:9px; padding:12pt 13pt;
+    background:#fff;
+  }
+  .card h3{font-size:11.5pt; margin-bottom:5pt; color:var(--ink);}
+  .card .tag{
+    display:inline-block; font-size:8.5pt; font-weight:700; color:var(--brand);
+    background:var(--brand-soft); border-radius:5px; padding:2pt 7pt; margin-bottom:7pt;
+  }
+
+  .why{display:flex; gap:12pt;}
+  .why .item{flex:1;}
+  .why h3{font-size:11pt; margin-bottom:3pt;}
+  .why .ic{font-size:15pt; margin-bottom:3pt;}
+
+  .steps{display:flex; gap:10pt; counter-reset:s;}
+  .steps .step{flex:1; position:relative; padding-left:26pt;}
+  .steps .step::before{
+    counter-increment:s; content:counter(s);
+    position:absolute; left:0; top:0; width:18pt; height:18pt; border-radius:50%;
+    background:var(--brand); color:#fff; font-weight:700; font-size:10pt;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .steps .step b{display:block; margin-bottom:2pt;}
+
+  pre{
+    background:var(--code-bg); color:var(--code-ink); border-radius:8px;
+    padding:11pt 13pt; font-family:"DejaVu Sans Mono",Consolas,monospace;
+    font-size:8.7pt; line-height:1.5; overflow:hidden; margin:8pt 0 0; white-space:pre-wrap;
+  }
+  pre .c{color:#7fd6c2;}
+
+  .cta{
+    background:var(--brand-soft); border:1px solid #cfe6e0; border-radius:9px;
+    padding:14pt 16pt; display:flex; justify-content:space-between; align-items:center; gap:16pt;
+  }
+  .cta h3{font-size:12.5pt; color:var(--brand); margin-bottom:3pt;}
+  .cta .btn{
+    background:var(--brand); color:#fff; border-radius:7px; padding:9pt 16pt;
+    font-weight:700; font-size:10.5pt; white-space:nowrap;
+  }
+
+  footer{
+    margin-top:16pt; padding-top:8pt; border-top:1px solid var(--line);
+    color:var(--muted); font-size:8.5pt; display:flex; justify-content:space-between;
+  }
+</style>
+</head>
+<body>
+
+  <div class="hero">
+    <div class="brand">einvoice-core</div>
+    <h1>E-Rechnung. Geprüft und erzeugt. Per API.</h1>
+    <p>XRechnung und ZUGFeRD validieren und erstellen — gehostet in Deutschland,
+       in Ihre Software integriert, in Minuten startklar.</p>
+    <div class="badges">
+      <span class="badge">🇩🇪 In Deutschland gehostet</span>
+      <span class="badge">✓ Offizieller KoSIT-Validator</span>
+      <span class="badge">🔒 Zero-Retention</span>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="section-title">Die E-Rechnungspflicht ist da</div>
+    <p>Seit dem 1. Januar 2025 muss jedes inländische Unternehmen E-Rechnungen
+       <b>empfangen</b> können. Der verpflichtende <b>Versand</b> folgt 2027/2028.
+       Fehlerhafte Rechnungen bedeuten Zahlungsverzug und Ärger mit dem Finanzamt —
+       und niemand will dafür ein eigenes XRechnung-Modul bauen und pflegen.</p>
+  </div>
+
+  <div class="block">
+    <div class="section-title">Die Lösung — zwei Endpunkte</div>
+    <div class="cols">
+      <div class="card">
+        <span class="tag">PRÜFEN</span>
+        <h3>Rechnung validieren</h3>
+        <p class="muted">XML oder ZUGFeRD/Factur-X-<b>PDF</b> rein — sauberer
+        Prüfbericht raus: gültig oder nicht, mit konkreten Fehlern, Regelcodes und
+        der genauen Stelle im Dokument.</p>
+      </div>
+      <div class="card">
+        <span class="tag">ERZEUGEN</span>
+        <h3>Rechnung erstellen</h3>
+        <p class="muted">Strukturierte Daten rein — fertige, <b>geprüfte</b>
+        XRechnung raus. Jede erzeugte Rechnung wird vorab selbst validiert: nur
+        gültige Rechnungen verlassen die API.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="section-title">Warum einvoice-core</div>
+    <div class="why">
+      <div class="item">
+        <div class="ic">🇩🇪</div>
+        <h3>In Deutschland gehostet</h3>
+        <p class="muted small">Deutscher Server, keine US-Subdienstleister im
+        Datenpfad. DSGVO-freundlich, mit AVV.</p>
+      </div>
+      <div class="item">
+        <div class="ic">✓</div>
+        <h3>Amtlich geprüft</h3>
+        <p class="muted small">Validierung über den offiziellen KoSIT-Validator —
+        dieselben Ergebnisse wie das amtliche Prüfwerkzeug.</p>
+      </div>
+      <div class="item">
+        <div class="ic">🔒</div>
+        <h3>Zero-Retention</h3>
+        <p class="muted small">Rechnungen werden nur im Speicher verarbeitet und
+        nie gespeichert. Es bleiben ausschließlich Metadaten.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="section-title">So einfach ist es</div>
+    <div class="steps">
+      <div class="step"><b>API-Key erhalten</b><span class="muted small">Ein Schlüssel, sofort einsatzbereit.</span></div>
+      <div class="step"><b>Per HTTPS senden</b><span class="muted small">Rechnung an die API schicken.</span></div>
+      <div class="step"><b>Ergebnis erhalten</b><span class="muted small">Prüfbericht oder fertige XRechnung.</span></div>
+    </div>
+<pre><span class="c"># Rechnung prüfen — probieren Sie es mit Ihrer eigenen Datei:</span>
+curl -H "X-API-Key: IHR_KEY" \
+     -F "file=@rechnung.xml" \
+     https://api.codedbyme.de/validate</pre>
+  </div>
+
+  <div class="block">
+    <div class="section-title">Für wen</div>
+    <p class="muted">Web- &amp; Software-Agenturen, die E-Rechnung in Kundenprojekte
+    einbauen, sowie KMU mit eigener Fakturierung — überall dort, wo Rechnungen
+    rechtssicher empfangen oder erstellt werden müssen, ohne ein eigenes Modul zu
+    entwickeln und zu warten.</p>
+  </div>
+
+  <div class="cta">
+    <div>
+      <h3>Jetzt im Pilotprogramm testen</h3>
+      <p class="muted small" style="margin:0;">Begrenzte Plätze zu Sonderkonditionen —
+      mit persönlicher Begleitung bei der Integration.</p>
+    </div>
+    <div class="btn">Kontakt aufnehmen →</div>
+  </div>
+
+  <footer>
+    <span>einvoice-core — E-Rechnung als API · gehostet in Deutschland</span>
+    <span>[Ihre Website] · [Ihre E-Mail]</span>
+  </footer>
+
+</body>
+</html>

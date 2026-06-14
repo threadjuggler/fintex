@@ -1,0 +1,9 @@
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+# Die App laeuft im Container mit WORKDIR /app (Top-Level-Module). Dasselbe hier,
+# damit `from main import app` / `from einvoice import ...` in Tests funktioniert.
+pythonpath = ["app"]
+markers = [
+    "kosit: integration tests that require a running KoSIT validator daemon",
+]

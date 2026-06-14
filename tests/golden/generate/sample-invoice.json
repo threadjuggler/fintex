@@ -1,0 +1,26 @@
+{
+  "invoice_number": "RE-2026-0042",
+  "issue_date": "2026-06-14",
+  "buyer_reference": "04011000-12345-03",
+  "currency": "EUR",
+  "note": {"text": "Vielen Dank fuer Ihren Auftrag.", "subject_code": "AAI"},
+  "seller": {
+    "name": "Muster Verlag GmbH",
+    "vat_id": "DE123456789",
+    "legal_id": "HRB 12345 Berlin",
+    "address": {"line1": "Verlagsstrasse 1", "postcode": "10115", "city": "Berlin", "country": "DE"},
+    "electronic_address": "rechnung@muster-verlag.de",
+    "contact": {"name": "Buchhaltung", "phone": "+49 30 1234567", "email": "buchhaltung@muster-verlag.de"}
+  },
+  "buyer": {
+    "name": "Beispiel Behoerde",
+    "id": "BEH-007",
+    "address": {"line1": "Amtsplatz 5", "postcode": "20095", "city": "Hamburg", "country": "DE"},
+    "electronic_address": "einkauf@behoerde.de"
+  },
+  "lines": [
+    {"id": "1", "name": "Beratungsleistung", "description": "Konzeption", "quantity": "10", "unit_code": "HUR", "net_price": "95.00", "vat_rate": "19", "vat_category": "S"},
+    {"id": "2", "name": "Lizenz Software", "quantity": "1", "unit_code": "C62", "net_price": "199.00", "vat_rate": "19", "vat_category": "S"}
+  ],
+  "payment": {"means_code": "58", "iban": "DE75512108001245126199", "terms": "Zahlbar innerhalb 14 Tagen ohne Abzug.", "due_date": "2026-06-28"}
+}

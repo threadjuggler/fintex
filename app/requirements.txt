@@ -1,3 +1,9 @@
-# Lose Mindestversionen fuer das Hello-World. Beim echten Stack pinnen wir exakt.
+# Laufzeit-Abhaengigkeiten des FastAPI-Containers.
 fastapi>=0.115
 uvicorn[standard]>=0.30
+httpx>=0.27            # Aufruf des KoSIT-Sidecars
+lxml>=5.0             # Wohlgeformtheits-Vorabcheck + Quell-/Report-Parsing
+python-multipart>=0.0.9  # Multipart-Upload (UploadFile) fuer /validate
+factur-x>=4.0         # eingebettete XML aus ZUGFeRD/Factur-X-PDFs extrahieren
+asyncpg>=0.29         # Postgres: gehashte API-Keys + Nutzungs-Metadaten
+redis>=5.0            # optionaler Rate-Limiter (Fixed-Window)
