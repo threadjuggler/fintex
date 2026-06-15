@@ -10,111 +10,177 @@
 </head>
 <body>
 
+  <!-- Dekorative Tiefen-Ebene (rein visuell, hinter dem Inhalt) -->
+  <div class="bg-orbs" aria-hidden="true">
+    <span class="orb orb-1"></span>
+    <span class="orb orb-2"></span>
+    <span class="orb orb-3"></span>
+  </div>
+
   <header class="topbar">
     <div class="wrap topbar-in">
       <img class="logo" src="/playground/static/snapvoice-logo.png" alt="snapvoice">
       <span class="topbar-tag">API-Playground</span>
+      <a class="topbar-cta" href="mailto:info@snapvoice.de?subject=Anforderung%20Test%20API%20Key&amp;body=Hiermit%20bitte%20ich%20Sie%20mir%20zu%20Testzwecken%20einen%20API-KEY%20f%C3%BCr%20den%20snapvoice%20Playground%20an%20die%20o.g.%20E-Mail%20zu%20senden.">Test-Key anfordern</a>
     </div>
   </header>
 
   <section class="hero">
-    <div class="wrap">
-      <h1>E-Rechnung. Geprüft und erzeugt. Per API.</h1>
-      <p class="lead">XRechnung und ZUGFeRD validieren und erstellen — gehostet in
-        Deutschland, in Ihre Software integriert, in Minuten startklar. Testen Sie die
-        beiden Endpunkte hier direkt im Browser — mit unseren Testdaten oder Ihren eigenen.
-        Dazu brauchen Sie einen API-Key; einen kostenlosen Test-Key erhalten Sie auf Anfrage
-        unter <a href="mailto:info@snapvoice.de">info@snapvoice.de</a>.</p>
-      <div class="badges">
-        <span class="badge">🇩🇪 In Deutschland gehostet</span>
-        <span class="badge">✓ Offizieller KoSIT-Validator</span>
-        <span class="badge">🔒 Zero-Retention</span>
+    <div class="wrap hero-in">
+      <div class="hero-copy">
+        <span class="eyebrow">E-Rechnung als API · gehostet in Deutschland</span>
+        <h1>E-Rechnungen <span class="grad">prüfen</span> und <span class="grad">erzeugen</span> — live testen.</h1>
+        <p class="lead">XRechnung &amp; ZUGFeRD/Factur-X. Wählen Sie unten, was Sie ausprobieren
+          möchten — mit unseren Beispieldaten oder Ihren eigenen. Direkt im Browser, in Sekunden.</p>
+        <div class="badges">
+          <span class="badge">🇩🇪 In Deutschland gehostet</span>
+          <span class="badge">✓ Offizieller KoSIT-Validator</span>
+          <span class="badge">🔒 Zero-Retention</span>
+        </div>
+      </div>
+
+      <!-- 3D-Blickfang: stilisierte Rechnung mit Prüf-Häkchen -->
+      <div class="hero-art" data-tilt aria-hidden="true">
+        <div class="doc">
+          <span class="doc-badge" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4 10-10"/></svg>
+          </span>
+          <span class="doc-line w-70"></span>
+          <span class="doc-line w-90"></span>
+          <span class="doc-line w-50"></span>
+          <span class="doc-chip">XRechnungCII</span>
+          <span class="doc-line w-80"></span>
+          <span class="doc-line w-40"></span>
+        </div>
       </div>
     </div>
   </section>
 
   <main class="wrap">
-    <div class="tabs" role="tablist">
-      <button class="tab is-active" id="tab-validate" data-panel="panel-validate" role="tab">/validate — Rechnung prüfen</button>
-      <button class="tab" id="tab-generate" data-panel="panel-generate" role="tab">/generate — Rechnung erzeugen</button>
+
+    <!-- Orientierung: 3 Schritte -->
+    <ol class="stepper" id="stepper">
+      <li class="step is-active" data-step="1"><span class="step-no">1</span><span class="step-lbl">Funktion wählen</span></li>
+      <li class="step" data-step="2"><span class="step-no">2</span><span class="step-lbl">API-Key eingeben</span></li>
+      <li class="step" data-step="3"><span class="step-no">3</span><span class="step-lbl">Testen</span></li>
+    </ol>
+
+    <!-- Was kann die API? Zwei klare Wahlmöglichkeiten -->
+    <div class="modes" role="tablist" aria-label="API-Funktion wählen">
+      <button class="mode is-active" id="mode-validate" data-panel="panel-validate" role="tab" aria-selected="true" data-tilt>
+        <span class="mode-ic" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg>
+        </span>
+        <span class="mode-txt">
+          <span class="mode-head"><span class="mode-name">Rechnung prüfen</span><code class="mode-ep">/validate</code></span>
+          <span class="mode-desc">XML oder ZUGFeRD/Factur-X-PDF rein → sauberer Prüfbericht raus.</span>
+        </span>
+        <span class="mode-go" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
+        </span>
+      </button>
+
+      <button class="mode" id="mode-generate" data-panel="panel-generate" role="tab" aria-selected="false" data-tilt>
+        <span class="mode-ic" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9.3 14.6l1.7 1.7 3.4-3.7"/></svg>
+        </span>
+        <span class="mode-txt">
+          <span class="mode-head"><span class="mode-name">Rechnung erzeugen</span><code class="mode-ep">/generate</code></span>
+          <span class="mode-desc">Strukturiertes JSON rein → fertige, geprüfte XRechnung raus.</span>
+        </span>
+        <span class="mode-go" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
+        </span>
+      </button>
     </div>
 
-    <!-- Geteilte API-Key-Leiste – sichtbar auf beiden Tabs, gilt für /validate UND /generate -->
+    <!-- Geteilte API-Key-Leiste – gilt für beide Funktionen -->
     <div class="keybar">
-      <div class="field keyfield">
-        <label class="lbl" for="apikey">API-Key <span class="muted">— erforderlich zum Prüfen und Erzeugen</span></label>
-        <div class="keyrow">
-          <input id="apikey" class="key-input" type="text" autocomplete="off" spellcheck="false"
-                 placeholder="API-Key einfügen — schaltet 120 Credits frei">
-          <a id="acc-request" class="btn ghost mini"
-             href="mailto:info@snapvoice.de?subject=Anforderung%20Test%20API%20Key&amp;body=Hiermit%20bitte%20ich%20Sie%20mir%20zu%20Testzwecken%20einen%20API-KEY%20f%C3%BCr%20den%20snapvoice%20Playground%20an%20die%20o.g.%20E-Mail%20zu%20senden.">API-Key anfordern</a>
-        </div>
-        <div class="keymeta">
-          <span id="acc-status" class="acc-status"></span>
-          <span id="acc-credits" class="acc-credits">Verbrauchte Credits: –/120</span>
+      <div class="keybar-head">
+        <span class="key-ic" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="M10.8 12.2 19 4"/><path d="M16 7l2 2"/><path d="M14 9l2 2"/></svg>
+        </span>
+        <label class="key-lbl" for="apikey">API-Key <span class="muted">— erforderlich zum Prüfen und Erzeugen</span></label>
+      </div>
+      <div class="keyrow">
+        <input id="apikey" class="key-input" type="text" autocomplete="off" spellcheck="false"
+               placeholder="API-Key einfügen — schaltet 120 Credits frei">
+        <a id="acc-request" class="btn ghost"
+           href="mailto:info@snapvoice.de?subject=Anforderung%20Test%20API%20Key&amp;body=Hiermit%20bitte%20ich%20Sie%20mir%20zu%20Testzwecken%20einen%20API-KEY%20f%C3%BCr%20den%20snapvoice%20Playground%20an%20die%20o.g.%20E-Mail%20zu%20senden.">API-Key anfordern</a>
+      </div>
+      <div class="keymeta">
+        <span id="acc-status" class="acc-status"></span>
+        <div class="credits">
+          <div class="credits-bar"><span id="acc-meter" class="credits-fill"></span></div>
+          <span id="acc-credits" class="acc-credits">–/120 Credits</span>
         </div>
       </div>
     </div>
 
     <!-- ===================== VALIDATE ===================== -->
-    <section class="panel is-active" id="panel-validate" role="tabpanel">
-      <p class="muted">XML oder ZUGFeRD/Factur-X-<b>PDF</b> rein — sauberer Prüfbericht
-        raus: gültig oder nicht, mit Regelcodes und Fundstelle.</p>
-
+    <section class="panel is-active" id="panel-validate" role="tabpanel" aria-labelledby="mode-validate">
       <div class="field">
-        <label class="lbl">Beispiel laden</label>
+        <label class="lbl"><span class="lbl-no">1</span> Beispiel laden <span class="muted">— schnellster Start</span></label>
         <div class="chips" id="validate-samples">
-          <button class="chip" data-key="ubl-valid">XRechnung UBL · gültig</button>
-          <button class="chip" data-key="cii-valid">XRechnung CII · gültig</button>
-          <button class="chip" data-key="ubl-invalid">UBL · ungültig (Leitweg-ID fehlt)</button>
-          <button class="chip" data-key="facturx-pdf">Factur-X-PDF · gültig</button>
-          <button class="chip" data-key="plain-pdf">PDF ohne E-Rechnung</button>
+          <button class="chip" data-key="ubl-valid" data-tilt>XRechnung UBL · gültig</button>
+          <button class="chip" data-key="cii-valid" data-tilt>XRechnung CII · gültig</button>
+          <button class="chip" data-key="ubl-invalid" data-tilt>UBL · ungültig (Leitweg-ID fehlt)</button>
+          <button class="chip" data-key="facturx-pdf" data-tilt>Factur-X-PDF · gültig</button>
+          <button class="chip" data-key="plain-pdf" data-tilt>PDF ohne E-Rechnung</button>
         </div>
         <p class="hint" id="validate-loaded"></p>
       </div>
 
       <div class="field">
-        <label class="lbl" for="validate-xml">Eigenes XML einfügen</label>
+        <label class="lbl" for="validate-xml"><span class="lbl-no">2</span> Eigenes XML einfügen</label>
         <textarea id="validate-xml" spellcheck="false" placeholder="<?xml version=&quot;1.0&quot;?> … oder ein Beispiel oben laden"></textarea>
       </div>
 
       <div class="field">
-        <label class="lbl" for="validate-file">…oder eigene Datei hochladen (XML / PDF)</label>
-        <input type="file" id="validate-file" accept=".xml,.pdf,application/xml,text/xml,application/pdf">
+        <label class="lbl">…oder eigene Datei hochladen (XML / PDF)</label>
+        <label class="dropzone" id="validate-dropzone" for="validate-file">
+          <span class="dz-ic" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="M7 9l5-5 5 5"/><path d="M5 20h14"/></svg>
+          </span>
+          <span class="dz-txt"><b>Datei hierher ziehen</b> oder klicken zum Auswählen<br><span class="muted">XML oder PDF · max. 3 MB</span></span>
+          <input type="file" id="validate-file" accept=".xml,.pdf,application/xml,text/xml,application/pdf">
+        </label>
       </div>
 
       <div class="actions">
-        <button class="btn" id="validate-run" disabled>Prüfen →</button>
+        <button class="btn primary" id="validate-run" disabled>Prüfen
+          <svg class="btn-arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
+        </button>
         <button class="btn ghost" id="validate-reset" type="button">Zurücksetzen</button>
       </div>
 
-      <div class="result" id="validate-result" hidden></div>
+      <div class="result" id="validate-result" aria-live="polite" hidden></div>
     </section>
 
     <!-- ===================== GENERATE ===================== -->
-    <section class="panel" id="panel-generate" role="tabpanel">
-      <p class="muted">Strukturierte Daten (JSON) rein — fertige, <b>geprüfte</b>
-        XRechnung-CII raus. Jede erzeugte Rechnung wird vorab selbst validiert: nur
-        gültige Rechnungen verlassen die API.</p>
+    <section class="panel" id="panel-generate" role="tabpanel" aria-labelledby="mode-generate">
+      <p class="panel-lead">Jede erzeugte Rechnung wird <b>vorab selbst validiert</b> — nur gültige Rechnungen verlassen die API.</p>
 
       <div class="field">
-        <label class="lbl">Beispiel</label>
+        <label class="lbl"><span class="lbl-no">1</span> Beispiel laden</label>
         <div class="chips">
-          <button class="chip" id="generate-load">Beispiel-Rechnung laden</button>
+          <button class="chip" id="generate-load" data-tilt>Beispiel-Rechnung laden</button>
         </div>
       </div>
 
       <div class="field">
-        <label class="lbl" for="generate-json">Rechnungs-JSON</label>
+        <label class="lbl" for="generate-json"><span class="lbl-no">2</span> Rechnungs-JSON</label>
         <textarea id="generate-json" class="mono" spellcheck="false" placeholder='{ "invoice_number": "RE-2026-0001", … }'></textarea>
       </div>
 
       <div class="actions">
-        <button class="btn" id="generate-run" disabled>Erzeugen →</button>
+        <button class="btn primary" id="generate-run" disabled>Erzeugen
+          <svg class="btn-arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
+        </button>
         <button class="btn ghost" id="generate-reset" type="button">Leeren</button>
       </div>
 
-      <div class="result" id="generate-result" hidden></div>
+      <div class="result" id="generate-result" aria-live="polite" hidden></div>
     </section>
   </main>
 

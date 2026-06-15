@@ -4,6 +4,7 @@
 // (textContent) gerendert, nie per innerHTML mit Eingabedaten.
 
 const $ = (sel, root = document) => root.querySelector(sel);
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 function el(tag, props = {}, children = []) {
   const n = document.createElement(tag);
@@ -16,10 +17,11 @@ function el(tag, props = {}, children = []) {
   return n;
 }
 
+// Busy-Zustand: innerHTML sichern/wiederherstellen, damit Icons im Button erhalten bleiben.
 function setBusy(btn, busy) {
   btn.disabled = busy;
-  if (busy) { btn.dataset.label = btn.textContent; btn.textContent = "… bitte warten"; }
-  else if (btn.dataset.label) { btn.textContent = btn.dataset.label; }
+  if (busy) { btn.dataset.html = btn.innerHTML; btn.textContent = "… bitte warten"; }
+  else if (btn.dataset.html) { btn.innerHTML = btn.dataset.html; delete btn.dataset.html; }
 }
 
 function showSpinner(box, msg) {
@@ -65,6 +67,7 @@ function findingList(title, items, warn) {
 const apikeyInput = $("#apikey");
 const accStatus = $("#acc-status");
 const accCredits = $("#acc-credits");
+const accMeter = $("#acc-meter");
 const KEY_STORE = "snapvoice_api_key";
 let creditLimit = 120;
 let keyOk = false;                 // true ⇒ Run-Buttons aktiv (gültiger Key, oder Dev ohne Keys)
@@ -76,14 +79,36 @@ function getKey() { return apikeyInput.value.trim(); }
 function keyHeaders() { const k = getKey(); return k ? { "X-API-Key": k } : {}; }
 
 function setStatus(kind, text) { accStatus.className = "acc-status " + kind; accStatus.textContent = text; }
+
 function setCredits(used, limit) {
   creditLimit = limit || creditLimit;
   if (used === null || used === undefined) {
-    accCredits.textContent = "Verbrauchte Credits: –/" + creditLimit;
+    accCredits.textContent = "–/" + creditLimit + " Credits";
     accCredits.classList.remove("low");
+    if (accMeter) { accMeter.style.width = "0%"; accMeter.classList.remove("low"); }
   } else {
-    accCredits.textContent = "Verbrauchte Credits: " + used + "/" + creditLimit;
-    accCredits.classList.toggle("low", used >= creditLimit);
+    accCredits.textContent = used + "/" + creditLimit + " Credits";
+    const low = used >= creditLimit;
+    accCredits.classList.toggle("low", low);
+    if (accMeter) {
+      const pct = creditLimit ? Math.min(100, Math.round((used / creditLimit) * 100)) : 0;
+      accMeter.style.width = pct + "%";
+      accMeter.classList.toggle("low", low);
+    }
+  }
+}
+
+// Stepper-Fortschritt spiegeln: 1 erledigt, 2 aktiv→erledigt bei gültigem Key, 3 aktiv wenn testbereit.
+function updateStepper() {
+  const s1 = $('.step[data-step="1"]'), s2 = $('.step[data-step="2"]'), s3 = $('.step[data-step="3"]');
+  if (!s1 || !s2 || !s3) return;
+  s1.classList.add("is-done"); s1.classList.remove("is-active");
+  if (keyOk) {
+    s2.classList.add("is-done"); s2.classList.remove("is-active");
+    s3.classList.add("is-active");
+  } else {
+    s2.classList.add("is-active"); s2.classList.remove("is-done");
+    s3.classList.remove("is-active");
   }
 }
 
@@ -94,6 +119,7 @@ function updateRunButtons() {
   const t = keyOk ? "" : "Bitte oben einen gültigen API-Key eingeben";
   vRunBtn.title = t;
   gRunBtn.title = t;
+  updateStepper();
 }
 
 async function refreshCredits() {
@@ -134,14 +160,18 @@ apikeyInput.addEventListener("input", debounce(() => {
   refreshCredits();
 }, 400));
 
-/* ===================== Tabs ===================== */
-for (const tab of document.querySelectorAll(".tab")) {
-  tab.addEventListener("click", () => {
-    document.querySelectorAll(".tab").forEach(t => t.classList.remove("is-active"));
-    document.querySelectorAll(".panel").forEach(p => p.classList.remove("is-active"));
-    tab.classList.add("is-active");
-    $("#" + tab.dataset.panel).classList.add("is-active");
-  });
+/* ===================== Modus-Umschaltung (Prüfen / Erzeugen) ===================== */
+const modeBtns = document.querySelectorAll(".mode");
+for (const m of modeBtns) {
+  m.addEventListener("click", () => activateMode(m));
+}
+function activateMode(m) {
+  modeBtns.forEach(x => { x.classList.remove("is-active"); x.setAttribute("aria-selected", "false"); });
+  document.querySelectorAll(".panel").forEach(p => p.classList.remove("is-active"));
+  m.classList.add("is-active");
+  m.setAttribute("aria-selected", "true");
+  const panel = document.getElementById(m.dataset.panel);
+  if (panel) panel.classList.add("is-active");
 }
 
 /* ===================== Validate ===================== */
@@ -149,7 +179,21 @@ const vXml = $("#validate-xml");
 const vFile = $("#validate-file");
 const vHint = $("#validate-loaded");
 const vResult = $("#validate-result");
+const vDrop = $("#validate-dropzone");
+const vDzTxt = vDrop ? vDrop.querySelector(".dz-txt") : null;
+const vDzDefault = vDzTxt ? vDzTxt.innerHTML : "";   // statischer Default zum Wiederherstellen
 let validatePendingFile = null; // gesetzt, wenn ein PDF-Beispiel geladen wurde
+
+function reflectFile(name) {
+  if (!vDrop) return;
+  vDrop.classList.add("has-file");
+  if (vDzTxt) vDzTxt.textContent = "Gewählt: " + name;
+}
+function clearFileUI() {
+  if (!vDrop) return;
+  vDrop.classList.remove("has-file", "is-drag");
+  if (vDzTxt) vDzTxt.innerHTML = vDzDefault;
+}
 
 function setActiveChip(chip) {
   document.querySelectorAll("#validate-samples .chip").forEach(c => c.classList.remove("is-active"));
@@ -173,11 +217,13 @@ async function loadValidateSample(key, chip) {
       validatePendingFile = new File([blob], name, { type: "application/pdf" });
       vXml.value = "";
       vFile.value = "";
+      reflectFile(name + " (Beispiel)");
       vHint.textContent = "PDF-Beispiel geladen (" + name + ") — jetzt auf „Prüfen“.";
     } else {
       vXml.value = await res.text();
       validatePendingFile = null;
       vFile.value = "";
+      clearFileUI();
       vHint.textContent = "Beispiel geladen — Sie können es bearbeiten und „Prüfen“.";
     }
   } catch (e) {
@@ -189,14 +235,31 @@ async function loadValidateSample(key, chip) {
 vXml.addEventListener("input", () => { if (vXml.value) { validatePendingFile = null; setActiveChip(null); } });
 vFile.addEventListener("change", () => {
   if (vFile.files && vFile.files[0]) {
-    validatePendingFile = null; setActiveChip(null);
+    validatePendingFile = null; setActiveChip(null); vXml.value = "";
+    reflectFile(vFile.files[0].name);
     vHint.textContent = "Datei gewählt: " + vFile.files[0].name;
   }
 });
 
+// Drag & Drop auf die Dropzone
+if (vDrop) {
+  ["dragenter", "dragover"].forEach(ev =>
+    vDrop.addEventListener(ev, e => { e.preventDefault(); vDrop.classList.add("is-drag"); }));
+  ["dragleave", "dragend", "drop"].forEach(ev =>
+    vDrop.addEventListener(ev, e => { e.preventDefault(); vDrop.classList.remove("is-drag"); }));
+  vDrop.addEventListener("drop", e => {
+    const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+    if (!f) return;
+    try { const dt = new DataTransfer(); dt.items.add(f); vFile.files = dt.files; } catch (_) { /* Fallback unten */ }
+    validatePendingFile = null; setActiveChip(null); vXml.value = "";
+    reflectFile(f.name);
+    vHint.textContent = "Datei gewählt: " + f.name;
+  });
+}
+
 $("#validate-reset").addEventListener("click", () => {
   vXml.value = ""; vFile.value = ""; validatePendingFile = null;
-  setActiveChip(null); vHint.textContent = ""; vResult.hidden = true;
+  setActiveChip(null); clearFileUI(); vHint.textContent = ""; vResult.hidden = true;
 });
 
 $("#validate-run").addEventListener("click", runValidate);
@@ -300,7 +363,7 @@ function renderGenerate(d) {
     if (d.ruleset_version) meta.appendChild(metaRow("Regelwerk", d.ruleset_version));
 
     const fname = (d.invoice_number || "rechnung") + ".xml";
-    const dl = el("button", { class: "btn mini", text: "XML herunterladen" });
+    const dl = el("button", { class: "btn ghost mini", text: "XML herunterladen" });
     dl.addEventListener("click", () => {
       const blob = new Blob([d.xml], { type: "application/xml" });
       const url = URL.createObjectURL(blob);
@@ -337,6 +400,32 @@ function renderGenerate(d) {
   }
 }
 
+/* ===================== 3D-Tilt (dezente Mikrointeraktion) ===================== */
+function initTilt() {
+  if (reduceMotion) return;
+  const MAX = 7; // Grad
+  for (const node of document.querySelectorAll("[data-tilt]")) {
+    let raf = null;
+    node.addEventListener("pointermove", (e) => {
+      if (e.pointerType === "touch") return;
+      const r = node.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width - 0.5;
+      const py = (e.clientY - r.top) / r.height - 0.5;
+      if (raf) cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        node.style.transform =
+          `perspective(700px) rotateY(${(px * MAX).toFixed(2)}deg) rotateX(${(-py * MAX).toFixed(2)}deg)`;
+      });
+    });
+    node.addEventListener("pointerleave", () => {
+      if (raf) cancelAnimationFrame(raf);
+      node.style.transform = "";
+    });
+  }
+}
+initTilt();
+
+/* ===================== Start ===================== */
 // Komfort: Generate-Beispiel direkt vorbefuellen.
 loadInvoiceSample();
 
