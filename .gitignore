@@ -3,12 +3,11 @@ __pycache__/
 *.py[codz]
 *$py.class
 
-# C extensions
-*.so
-
-# sensible
+# wichtig
 instructions/anwalt/
 
+# C extensions
+*.so
 
 # Distribution / packaging
 .Python
