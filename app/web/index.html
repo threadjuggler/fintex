@@ -17,16 +17,6 @@
     </div>
   </header>
 
-  <div class="account">
-    <div class="wrap account-in">
-      <label class="acc-lbl" for="apikey">API-Key</label>
-      <input id="apikey" class="acc-input" type="text" autocomplete="off" spellcheck="false"
-             placeholder="API-Key einfügen — schaltet 120 Credits frei">
-      <span id="acc-status" class="acc-status"></span>
-      <span id="acc-credits" class="acc-credits">Verbrauchte Credits: –/120</span>
-    </div>
-  </div>
-
   <section class="hero">
     <div class="wrap">
       <h1>E-Rechnung. Geprüft und erzeugt. Per API.</h1>
@@ -47,6 +37,23 @@
     <div class="tabs" role="tablist">
       <button class="tab is-active" id="tab-validate" data-panel="panel-validate" role="tab">/validate — Rechnung prüfen</button>
       <button class="tab" id="tab-generate" data-panel="panel-generate" role="tab">/generate — Rechnung erzeugen</button>
+    </div>
+
+    <!-- Geteilte API-Key-Leiste – sichtbar auf beiden Tabs, gilt für /validate UND /generate -->
+    <div class="keybar">
+      <div class="field keyfield">
+        <label class="lbl" for="apikey">API-Key <span class="muted">— erforderlich zum Prüfen und Erzeugen</span></label>
+        <div class="keyrow">
+          <input id="apikey" class="key-input" type="text" autocomplete="off" spellcheck="false"
+                 placeholder="API-Key einfügen — schaltet 120 Credits frei">
+          <a id="acc-request" class="btn ghost mini"
+             href="mailto:info@snapvoice.de?subject=Anforderung%20Test%20API%20Key&amp;body=Hiermit%20bitte%20ich%20Sie%20mir%20zu%20Testzwecken%20einen%20API-KEY%20f%C3%BCr%20den%20snapvoice%20Playground%20an%20die%20o.g.%20E-Mail%20zu%20senden.">API-Key anfordern</a>
+        </div>
+        <div class="keymeta">
+          <span id="acc-status" class="acc-status"></span>
+          <span id="acc-credits" class="acc-credits">Verbrauchte Credits: –/120</span>
+        </div>
+      </div>
     </div>
 
     <!-- ===================== VALIDATE ===================== -->

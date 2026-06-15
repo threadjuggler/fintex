@@ -105,7 +105,7 @@ async function refreshCredits() {
     else if (d.configured === false) {            // kein Key-System (lokale Entwicklung)
       setStatus("neutral", "Kein Key nötig (Dev)"); setCredits(null, creditLimit); keyOk = true;
     } else if (!k) {
-      setStatus("bad", "API-Key erforderlich"); setCredits(null, d.limit); keyOk = false;
+      setStatus("neutral", ""); setCredits(null, d.limit); keyOk = false;
     } else if (!d.valid) {
       setStatus("bad", "Ungültiger API-Key"); setCredits(null, d.limit); keyOk = false;
     } else {

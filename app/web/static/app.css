@@ -26,27 +26,30 @@ b{font-weight:700;}
   border-left:1px solid rgba(255,255,255,.22); padding-left:14px;
 }
 
-/* Account / API-Key bar */
-.account{background:#0a1f4a; border-bottom:1px solid rgba(255,255,255,.08);}
-.account-in{display:flex; align-items:center; gap:12px; padding:11px 0; flex-wrap:wrap;}
-.acc-lbl{color:#aeb8ff; font-size:12.5px; font-weight:700; letter-spacing:.03em;}
-.acc-input{
-  flex:1 1 280px; min-width:200px; padding:8px 12px; font-size:13.5px;
-  border:1px solid rgba(255,255,255,.18); border-radius:8px;
-  background:rgba(255,255,255,.06); color:#fff; font-family:inherit;
+/* Geteilte API-Key-Leiste (unter den Tabs, über beiden Panels – gilt für Validate & Generate) */
+.keybar{
+  background:#fff; border:1px solid var(--line); border-radius:var(--radius);
+  box-shadow:var(--shadow); padding:16px 18px; margin-bottom:14px;
 }
-.acc-input::placeholder{color:#8a96bf;}
-.acc-input:focus{outline:none; border-color:var(--accent); background:rgba(255,255,255,.1);}
-.acc-status{font-size:12.5px; font-weight:700; padding:3px 10px; border-radius:999px; white-space:nowrap;}
-.acc-status.ok{background:var(--ok-soft); color:var(--ok);}
-.acc-status.bad{background:var(--err-soft); color:var(--err);}
-.acc-status.neutral{background:rgba(255,255,255,.1); color:#cfd6ee;}
+.keybar .keyfield{margin:0;}
+.keyfield .lbl .muted{font-weight:600;}
+.keyrow{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+.key-input{
+  flex:1 1 260px; min-width:180px; padding:10px 12px; font-size:13.5px;
+  border:1px solid var(--line); border-radius:9px; background:#fcfdff;
+  color:var(--ink); font-family:inherit;
+}
+.key-input:focus{outline:none; border-color:var(--brand); box-shadow:0 0 0 3px rgba(24,64,216,.12);}
+.keymeta{display:flex; align-items:center; gap:14px; margin-top:9px; flex-wrap:wrap;}
+.acc-status{font-size:13px; font-weight:700;}
+.acc-status.ok{color:var(--ok);}
+.acc-status.bad{color:var(--err);}
+.acc-status.neutral{color:var(--muted);}
 .acc-credits{
-  margin-left:auto; color:#fff; font-weight:800; font-size:13.5px; white-space:nowrap;
-  background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.16);
-  border-radius:8px; padding:6px 12px;
+  font-size:13px; font-weight:800; color:var(--ink); white-space:nowrap;
+  background:var(--brand-soft); border:1px solid #d2d9fb; border-radius:8px; padding:5px 11px;
 }
-.acc-credits.low{background:rgba(192,38,38,.22); border-color:rgba(255,120,120,.4);}
+.acc-credits.low{background:var(--err-soft); border-color:#f3b4b4; color:var(--err);}
 
 /* Hero */
 .hero{
@@ -68,11 +71,13 @@ b{font-weight:700;}
 main{padding:26px 0 60px;}
 .tabs{display:flex; gap:8px; margin-bottom:18px; flex-wrap:wrap;}
 .tab{
-  border:1px solid var(--line); background:#fff; color:var(--muted);
-  border-radius:999px; padding:9px 18px; font-size:14px; font-weight:600;
+  border:1.5px solid var(--accent); background:#fff; color:var(--brand);
+  border-radius:999px; padding:9px 18px; font-size:14px; font-weight:700;
   cursor:pointer; font-family:inherit; transition:.12s;
 }
-.tab:hover{border-color:#c7d0e6;}
+/* Inaktiver Tab = klar anklickbarer Button (blau umrandet) mit „→" als Wechsel-Hinweis */
+.tab:not(.is-active)::after{content:"\00a0→"; font-weight:800;}
+.tab:hover{background:var(--brand-soft); border-color:var(--brand);}
 .tab.is-active{background:var(--brand); border-color:var(--brand); color:#fff;}
 
 /* Panels / cards */
@@ -114,6 +119,7 @@ input[type=file]{
   background:var(--brand); color:#fff; border:1px solid var(--brand);
   border-radius:9px; padding:11px 22px; font-size:14.5px; font-weight:700;
   cursor:pointer; font-family:inherit; transition:.12s;
+  text-decoration:none; display:inline-block;
 }
 .btn:hover{background:#1235b8; border-color:#1235b8;}
 .btn:disabled{opacity:.55; cursor:default;}

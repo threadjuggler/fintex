@@ -6,6 +6,10 @@ __pycache__/
 # C extensions
 *.so
 
+# sensible
+instructions/anwalt/
+
+
 # Distribution / packaging
 .Python
 build/
