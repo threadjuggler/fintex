@@ -5,8 +5,8 @@ um die erste Welle rauszubekommen. Bau dient nur dazu, etwas Vorführbares zu ha
 
 ## Positionierung (der Aufhänger)
 
-> XRechnung **validieren und erzeugen** per API — **gehostet in Deutschland**, ohne
-> US-Subdienstleister im Datenpfad, **Zero-Retention** (Rechnungen werden nur im
+> Mit **snapvoice**: XRechnung **validieren und erzeugen** per API — **gehostet in
+> Deutschland**, ohne US-Subdienstleister im Datenpfad, **Zero-Retention** (Rechnungen werden nur im
 > Speicher verarbeitet, nie gespeichert). Validierung über den offiziellen
 > KoSIT-Validator, also dieselben Ergebnisse wie das amtliche Prüftool.
 
@@ -41,27 +41,29 @@ Der Text unten funktioniert genauso als LinkedIn-Nachricht / warme Intro.
 > kurze Frage als [Agentur]: Bauen Sie für Kund:innen Projekte, in denen E-Rechnungen
 > (XRechnung/ZUGFeRD) anfallen — Empfang oder Erstellung?
 >
-> Ich biete dafür eine schlanke API:
+> Ich biete dafür **snapvoice**, eine schlanke API, gehostet in Deutschland:
 > - **/validate** – XML oder ZUGFeRD-PDF rein, sauberer Prüfbericht raus (offizieller
->   KoSIT-Validator, mit Regelcodes).
-> - **/generate** – JSON rein, geprüfte XRechnung raus (nur gültige Rechnungen verlassen
->   die API).
+>   KoSIT-Validator, mit Regelcodes und Fundstelle).
+> - **/generate** – strukturierte Daten rein, geprüfte XRechnung raus (nur gültige
+>   Rechnungen verlassen die API).
 >
-> Gehostet **in Deutschland**, ohne US-Subdienstleister, Zero-Retention (Rechnungen
-> werden nicht gespeichert). Spart Ihnen das eigene XRechnung-Modul.
+> Ohne US-Subdienstleister, Zero-Retention (Rechnungen werden nur im Speicher
+> verarbeitet, nie gespeichert) — spart Ihnen das eigene XRechnung-Modul samt Pflege.
 >
-> Ich suche gerade **5 Pilotkund:innen** zu vergünstigten Konditionen. 15 Minuten, ob es
-> für ein aktuelles Projekt passt? Hier ein Live-Beispiel zum Selbst-Ausprobieren:
+> Beide Endpunkte können Sie direkt im Browser ausprobieren:
+> **https://api.snapvoice.de/playground**
+> Antworten Sie kurz, dann schicke ich Ihnen einen kostenlosen Test-Key (120 Abfragen) —
+> einfach oben auf der Seite einfügen und mit Ihren eigenen Rechnungen testen.
 >
-> ```sh
-> curl -H "X-API-Key: <pilot-key>" -F "file=@rechnung.xml" https://api.codedbyme.de/validate
-> ```
+> Ich nehme gerade **5 Pilotkund:innen** zu vergünstigten Konditionen auf. Hätten Sie
+> 15 Minuten, ob es für ein aktuelles Projekt passt?
 >
 > Viele Grüße
 > [Dein Name]
+> snapvoice · info@snapvoice.de · https://api.snapvoice.de/playground
 
-**Prinzipien:** kurz, konkreter Bezug, ein klarer CTA (15 Min), sofort selbst testbar.
-Pro Empfänger 1–2 Sätze personalisieren (welche Projekte, welche Branche).
+**Prinzipien:** kurz, konkreter Bezug, ein klarer CTA (15 Min + Test-Key), live im
+Browser testbar. Pro Empfänger 1–2 Sätze personalisieren (welche Projekte, welche Branche).
 
 ## Zielliste aufbauen (15–20)
 

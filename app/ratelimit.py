@@ -26,22 +26,25 @@ def _get_client():
     return _client
 
 
-def _limit() -> int:
-    return int(os.environ.get("RATE_LIMIT_PER_MIN", "120"))
+def client():
+    """Geteilter Redis-Client (oder None ohne REDIS_URL). Auch vom Credit-Zaehler genutzt."""
+    return _get_client()
 
 
-async def check(identity: str) -> bool:
-    """True = erlaubt. Ohne/bei kaputtem Redis immer True (fail-open)."""
-    client = _get_client()
-    if client is None:
+async def check(identity: str, limit: int) -> bool:
+    """True = erlaubt. Fixed-Window pro Minute mit ``limit`` Anfragen pro Identitaet.
+    Ohne/bei kaputtem Redis immer True (fail-open) – ein kurzer Ausfall soll legitime
+    Requests nicht blocken. Genutzt vom Playground (Per-IP-Limit ohne API-Key)."""
+    cl = _get_client()
+    if cl is None:
         return True
     window = int(time.time() // 60)
     key = f"rl:{identity}:{window}"
     try:
-        count = await client.incr(key)
+        count = await cl.incr(key)
         if count == 1:
-            await client.expire(key, 60)
-        return count <= _limit()
+            await cl.expire(key, 60)
+        return count <= limit
     except Exception as exc:  # pragma: no cover - defensiv
         _log.warning("rate-limit check failed, allowing: %s", exc)
         return True

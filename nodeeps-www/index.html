@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>snapvoice — E-Rechnung als API</title>
+  <meta name="description" content="snapvoice — XRechnung & ZUGFeRD validieren und erzeugen per API. Gehostet in Deutschland, Zero-Retention.">
+  <link rel="icon" href="snapvoice-logo.png">
+  <style>
+    :root{
+      --navy:#001030; --ink:#0b1530; --muted:#5b6675; --line:#e3e8ef;
+      --brand:#1840d8; --accent:#6068f0;
+      --warn:#8a5a00; --warn-soft:#fdf3e3; --warn-line:#f0dca6;
+    }
+    *{box-sizing:border-box;}
+    html,body{margin:0;padding:0;}
+    body{font-family:"Segoe UI",Roboto,Helvetica,Arial,sans-serif; color:var(--ink);
+      background:#f5f7fb; line-height:1.55; font-size:15px;
+      min-height:100vh; display:flex; flex-direction:column;}
+    .wrap{max-width:920px; margin:0 auto; padding:0 20px; width:100%;}
+    a{color:var(--brand);}
+
+    /* Topbar */
+    .topbar{background:var(--navy);}
+    .topbar-in{display:flex; align-items:center; gap:14px; height:62px;}
+    .topbar .logo{height:26px; width:auto;}
+    .topbar-tag{color:#aeb8ff; font-weight:600; font-size:13px; letter-spacing:.04em;
+      border-left:1px solid rgba(255,255,255,.22); padding-left:14px;}
+
+    /* Hero (zentriert, füllt die Höhe) */
+    .hero{flex:1; display:flex; align-items:center; color:#fff; text-align:center;
+      background:
+        radial-gradient(120% 150% at 50% 0%, rgba(96,104,240,.50) 0%, rgba(24,64,216,.26) 38%, rgba(0,16,48,0) 66%),
+        var(--navy);
+      padding:60px 0;}
+    .hero h1{font-size:34px; font-weight:800; margin:0 0 10px; line-height:1.15;}
+    .hero .lead{font-size:16px; opacity:.92; margin:0 auto 30px; max-width:46ch;}
+
+    .cta{display:inline-block; background:#fff; color:var(--navy); border-radius:11px;
+      padding:16px 30px; font-size:17px; font-weight:800; text-decoration:none;
+      box-shadow:0 10px 30px rgba(0,0,0,.25); transition:transform .12s;}
+    .cta:hover{transform:translateY(-1px);}
+
+    .build{margin:26px auto 0; max-width:440px;
+      background:var(--warn-soft); border:1px solid var(--warn-line); color:var(--warn);
+      border-radius:11px; padding:13px 18px; font-size:14.5px; font-weight:600;
+      display:flex; align-items:center; justify-content:center; gap:10px;}
+    .build .sign{font-size:20px;}
+
+    /* Footer */
+    footer{border-top:1px solid var(--line); background:#fff;}
+    .foot-in{display:flex; justify-content:space-between; align-items:center; gap:16px;
+      padding:18px 20px; color:var(--muted); font-size:13px; flex-wrap:wrap;}
+    .foot .flogo{height:15px; width:auto; vertical-align:middle; margin-right:6px;}
+    .foot-links a{color:var(--brand); text-decoration:none; font-weight:600;}
+    .foot-links a:hover{text-decoration:underline;}
+
+    @media (max-width:560px){ .hero h1{font-size:27px;} .foot-in{flex-direction:column; align-items:flex-start;} }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="wrap topbar-in">
+      <img class="logo" src="snapvoice-logo.png" alt="snapvoice">
+      <span class="topbar-tag">E-Rechnung als API</span>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="wrap">
+      <h1>E-Rechnung. Geprüft und erzeugt. Per API.</h1>
+      <p class="lead">XRechnung und ZUGFeRD validieren und erzeugen — gehostet in Deutschland,
+        Zero-Retention.</p>
+
+      <a class="cta" href="https://api.snapvoice.de/playground">Hier geht's zum API-Playground →</a>
+
+      <div class="build">
+        <span class="sign">🚧</span> Diese Seite befindet sich im Aufbau
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div class="wrap foot-in">
+      <span><img class="flogo" src="snapvoice-logo-light.png" alt="snapvoice"> · E-Rechnung als API · gehostet in Deutschland</span>
+      <span class="foot-links">
+        <a href="https://api.snapvoice.de/playground">Playground</a> ·
+        <a href="impressum.html">Impressum</a> ·
+        <a href="agb.html">AGB</a> ·
+        <a href="datenschutz.html">Datenschutz</a> ·
+        <a href="mailto:info@snapvoice.de">info@snapvoice.de</a>
+      </span>
+    </div>
+  </footer>
+
+</body>
+</html>

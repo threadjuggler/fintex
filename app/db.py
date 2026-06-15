@@ -1,16 +1,15 @@
-"""Postgres-Anbindung: gehashte API-Keys + Nutzungs-Metadaten (Zero-Retention).
+"""Postgres-Anbindung: Nutzungs-Metadaten (Zero-Retention-Audit).
 
-Bewusst schlank (asyncpg + reines SQL, keine ORM/Migrationstools fuer Woche 1).
-Ohne ``DATABASE_URL`` laeuft die App ohne DB: Auth ist offen und es wird nichts
-geloggt – praktisch fuer lokale Entwicklung/Tests. In Compose ist ``DATABASE_URL``
-immer gesetzt, dann gelten Auth + Logging.
+Bewusst schlank (asyncpg + reines SQL, keine ORM/Migrationstools). Ohne
+``DATABASE_URL`` wird nichts geloggt – praktisch fuer lokale Entwicklung/Tests.
+API-Keys liegen nicht hier, sondern als Credit-Keys in ``API_KEYS`` (.env); siehe
+``credits``.
 
 WICHTIG (siehe Memory audit-trail-zero-retention): hier landen ausschliesslich
 Metadaten + Hashes + Versionspins. Niemals der Rechnungsinhalt selbst.
 """
 from __future__ import annotations
 
-import hashlib
 import logging
 import os
 from dataclasses import dataclass
@@ -21,17 +20,10 @@ _log = logging.getLogger("einvoice.db")
 _pool: asyncpg.Pool | None = None
 
 SCHEMA = """
-CREATE TABLE IF NOT EXISTS api_keys (
-    id          bigserial PRIMARY KEY,
-    key_hash    text NOT NULL UNIQUE,
-    label       text NOT NULL DEFAULT '',
-    active      boolean NOT NULL DEFAULT true,
-    created_at  timestamptz NOT NULL DEFAULT now()
-);
 CREATE TABLE IF NOT EXISTS usage_events (
     id              bigserial PRIMARY KEY,
     ts              timestamptz NOT NULL DEFAULT now(),
-    api_key_id      bigint REFERENCES api_keys(id),
+    api_key_id      bigint,
     endpoint        text NOT NULL,
     document_type   text,
     input_type      text,
@@ -50,22 +42,14 @@ def configured() -> bool:
     return bool(os.environ.get("DATABASE_URL"))
 
 
-def hash_key(plaintext: str) -> str:
-    return hashlib.sha256(plaintext.encode()).hexdigest()
-
-
 async def connect() -> None:
-    """Pool aufbauen, Schema sicherstellen, optional Bootstrap-Key anlegen."""
+    """Pool aufbauen und Schema sicherstellen."""
     global _pool
     if not configured():
         return
     _pool = await asyncpg.create_pool(os.environ["DATABASE_URL"], min_size=1, max_size=5)
     async with _pool.acquire() as con:
         await con.execute(SCHEMA)
-    boot = os.environ.get("BOOTSTRAP_API_KEY")
-    if boot:
-        await upsert_key(boot, label="bootstrap")
-        _log.info("bootstrap API key ensured")
 
 
 async def disconnect() -> None:
@@ -73,28 +57,6 @@ async def disconnect() -> None:
     if _pool is not None:
         await _pool.close()
         _pool = None
-
-
-async def upsert_key(plaintext: str, label: str = "") -> None:
-    if _pool is None:
-        return
-    async with _pool.acquire() as con:
-        await con.execute(
-            "INSERT INTO api_keys (key_hash, label) VALUES ($1, $2) "
-            "ON CONFLICT (key_hash) DO UPDATE SET active = true",
-            hash_key(plaintext), label,
-        )
-
-
-async def verify_api_key(plaintext: str) -> int | None:
-    """Gibt die api_keys.id zurueck, falls der Key existiert und aktiv ist."""
-    if _pool is None:
-        return None
-    async with _pool.acquire() as con:
-        row = await con.fetchrow(
-            "SELECT id FROM api_keys WHERE key_hash = $1 AND active", hash_key(plaintext)
-        )
-    return row["id"] if row else None
 
 
 @dataclass

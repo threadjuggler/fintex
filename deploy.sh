@@ -15,6 +15,9 @@ rsync -av \
   --exclude='__pycache__' \
   --exclude='.venv' \
   --exclude='.env' \
+  --exclude='keys.txt' \
+  --exclude='zielliste.md' \
+  --exclude='nodeeps-www' \
   --exclude='.pytest_cache' \
   --exclude='.ruff_cache' \
-  /home/bov/python/fintex/ "${user}@api.codedbyme.de:~/fintex/"
+  /home/bov/python/fintex/ "${user}@api.snapvoice.de:~/fintex/"

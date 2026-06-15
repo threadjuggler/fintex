@@ -42,6 +42,11 @@ services:
   redis:
     image: redis:7-alpine
     restart: unless-stopped
+    # appendonly + Volume: Credit-Zaehler ueberleben Neustarts (sonst bekaemen
+    # Kund:innen ihre verbrauchten Credits bei jedem Redis-Neustart zurueck).
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
@@ -59,9 +64,11 @@ services:
       KOSIT_URL: "http://kosit:8080"
       DATABASE_URL: "postgresql://einvoice:${POSTGRES_PASSWORD:-changeme}@postgres:5432/einvoice"
       REDIS_URL: "redis://redis:6379/0"
-      # Initialer API-Key beim Start (leer = keiner). In Prod via .env setzen.
-      BOOTSTRAP_API_KEY: "${BOOTSTRAP_API_KEY:-}"
-      RATE_LIMIT_PER_MIN: "${RATE_LIMIT_PER_MIN:-120}"
+      # Verkaufte Keys (max. 100) + Credits/Key. Mit API_KEYS != "" ist die API abgesichert.
+      API_KEYS: "${API_KEYS:-}"
+      CREDITS_PER_KEY: "${CREDITS_PER_KEY:-120}"
+      # Oeffentliche Test-Seite /playground: strengeres Limit pro Client-IP (ohne API-Key).
+      PLAYGROUND_RATE_PER_MIN: "${PLAYGROUND_RATE_PER_MIN:-30}"
     depends_on:
       kosit:
         condition: service_healthy
@@ -74,3 +81,4 @@ volumes:
   caddy_data:
   caddy_config:
   pg_data:
+  redis_data:

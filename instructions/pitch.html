@@ -2,12 +2,12 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<title>einvoice-core — E-Rechnung als API</title>
+<title>snapvoice — E-Rechnung als API</title>
 <style>
   :root{
-    --ink:#1a2330; --muted:#5b6675; --line:#e3e8ef;
-    --brand:#0b6b5b; --brand-soft:#e7f3f0; --accent:#0d7a8a;
-    --code-bg:#0f1b2a; --code-ink:#d8e6f5;
+    --navy:#001030; --ink:#0b1530; --muted:#5b6675; --line:#e3e8ef;
+    --brand:#1840d8; --accent:#6068f0; --brand-soft:#eef1fe;
+    --code-bg:#001030; --code-ink:#d8e6f5;
   }
   *{box-sizing:border-box;}
   @page{ size:A4; margin:14mm 14mm; }
@@ -24,10 +24,12 @@
 
   /* Hero */
   .hero{
-    background:linear-gradient(135deg,var(--brand) 0%,var(--accent) 100%);
+    background:
+      radial-gradient(120% 160% at 100% 125%, rgba(96,104,240,.55) 0%, rgba(24,64,216,.30) 38%, rgba(0,16,48,0) 62%),
+      var(--navy);
     color:#fff; border-radius:10px; padding:22pt 24pt; margin-bottom:16pt;
   }
-  .brand{font-size:11pt; letter-spacing:.12em; text-transform:uppercase; opacity:.9; margin-bottom:8pt;}
+  .hero .logo{ height:30pt; width:auto; display:block; margin-bottom:13pt; }
   .hero h1{font-size:26pt; margin-bottom:8pt; font-weight:800;}
   .hero p{font-size:12pt; opacity:.96; margin:0; max-width:46em;}
   .badges{display:flex; gap:8pt; margin-top:16pt; flex-wrap:wrap;}
@@ -73,10 +75,10 @@
     padding:11pt 13pt; font-family:"DejaVu Sans Mono",Consolas,monospace;
     font-size:8.7pt; line-height:1.5; overflow:hidden; margin:8pt 0 0; white-space:pre-wrap;
   }
-  pre .c{color:#7fd6c2;}
+  pre .c{color:#8ea2ff;}
 
   .cta{
-    background:var(--brand-soft); border:1px solid #cfe6e0; border-radius:9px;
+    background:var(--brand-soft); border:1px solid #d2d9fb; border-radius:9px;
     padding:14pt 16pt; display:flex; justify-content:space-between; align-items:center; gap:16pt;
   }
   .cta h3{font-size:12.5pt; color:var(--brand); margin-bottom:3pt;}
@@ -88,13 +90,15 @@
   footer{
     margin-top:16pt; padding-top:8pt; border-top:1px solid var(--line);
     color:var(--muted); font-size:8.5pt; display:flex; justify-content:space-between;
+    align-items:center;
   }
+  footer .flogo{height:12pt; width:auto; vertical-align:middle; margin-right:5pt;}
 </style>
 </head>
 <body>
 
   <div class="hero">
-    <div class="brand">einvoice-core</div>
+    <img class="logo" src="snapvoice_logo_on-dark.png" alt="snapvoice">
     <h1>E-Rechnung. Geprüft und erzeugt. Per API.</h1>
     <p>XRechnung und ZUGFeRD validieren und erstellen — gehostet in Deutschland,
        in Ihre Software integriert, in Minuten startklar.</p>
@@ -134,7 +138,7 @@
   </div>
 
   <div class="block">
-    <div class="section-title">Warum einvoice-core</div>
+    <div class="section-title">Warum snapvoice</div>
     <div class="why">
       <div class="item">
         <div class="ic">🇩🇪</div>
@@ -167,7 +171,7 @@
 <pre><span class="c"># Rechnung prüfen — probieren Sie es mit Ihrer eigenen Datei:</span>
 curl -H "X-API-Key: IHR_KEY" \
      -F "file=@rechnung.xml" \
-     https://api.codedbyme.de/validate</pre>
+     https://api.snapvoice.de/validate</pre>
   </div>
 
   <div class="block">
@@ -188,7 +192,7 @@ curl -H "X-API-Key: IHR_KEY" \
   </div>
 
   <footer>
-    <span>einvoice-core — E-Rechnung als API · gehostet in Deutschland</span>
+    <span><img class="flogo" src="snapvoice_logo_on-light.png" alt="snapvoice"> · E-Rechnung als API · gehostet in Deutschland</span>
     <span>[Ihre Website] · [Ihre E-Mail]</span>
   </footer>
 

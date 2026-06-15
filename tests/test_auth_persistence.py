@@ -1,9 +1,10 @@
-"""Day 6: API-Key-Auth + Zero-Retention-Metadatenlogging (Postgres).
+"""API-Key-Auth (Credit-Modell) + Zero-Retention-Metadatenlogging (Postgres).
 
 Integrationstest gegen eine echte Postgres-Instanz. Laeuft nur, wenn
 ``TEST_DATABASE_URL`` gesetzt ist (sonst Skip) – die uebrige Suite bleibt DB-frei.
-Setzt DATABASE_URL nur per ``monkeypatch`` (pro Test, danach zurueckgesetzt),
-damit die offenen Modus-Tests der anderen Module unberuehrt bleiben.
+Keys kommen aus ``API_KEYS`` (.env-Credit-Modell); DATABASE_URL/API_KEYS werden nur
+per ``monkeypatch`` (pro Test, danach zurueckgesetzt) gesetzt, damit die offenen
+Modus-Tests der anderen Module unberuehrt bleiben.
 """
 import asyncio
 import os
@@ -26,8 +27,8 @@ pytestmark = [
 @pytest.fixture()
 def client(monkeypatch, kosit_client):
     monkeypatch.setenv("DATABASE_URL", TEST_DB)
-    monkeypatch.setenv("BOOTSTRAP_API_KEY", API_KEY)
-    monkeypatch.delenv("REDIS_URL", raising=False)  # Rate-Limit fuer den Test aus
+    monkeypatch.setenv("API_KEYS", API_KEY)
+    monkeypatch.delenv("REDIS_URL", raising=False)  # Credits zaehlen hier nicht mit (fail-open)
     from main import app
 
     with TestClient(app) as test_client:

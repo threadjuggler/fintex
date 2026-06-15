@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AGB — snapvoice</title>
+  <meta name="robots" content="noindex">
+  <style>
+    :root{ --navy:#001030; --ink:#0b1530; --muted:#5b6675; --line:#e3e8ef; --brand:#1840d8; --accent:#6068f0; }
+    *{box-sizing:border-box;}
+    body{margin:0; background:#f5f7fb; color:var(--ink);
+      font-family:"Segoe UI",Roboto,Helvetica,Arial,sans-serif; line-height:1.6; font-size:15px;}
+    .topbar{background:var(--navy); padding:16px 0;}
+    .wrap{max-width:820px; margin:0 auto; padding:0 20px;}
+    .brand{font-weight:800; font-size:20px; letter-spacing:-.01em;}
+    .brand .snap{color:#fff;} .brand .v{color:var(--accent);} .brand .oice{color:#5b78ff;}
+    main{padding:30px 0 60px;}
+    h1{font-size:26px; margin:0 0 4px;}
+    h2{font-size:16px; margin:24px 0 6px; color:var(--brand);}
+    p{margin:0 0 8px;} ol{margin:0 0 8px; padding-left:22px;} li{margin:0 0 5px;}
+    .muted{color:var(--muted);} a{color:var(--brand);}
+    .card{background:#fff; border:1px solid var(--line); border-radius:11px; padding:24px 28px;
+      box-shadow:0 1px 2px rgba(10,20,48,.06), 0 8px 24px rgba(10,20,48,.06);}
+    .ph{background:#fff7d6; border:1px dashed #e6c200; border-radius:6px; padding:1px 6px;}
+    .draft{background:#fdecec; border:1px solid #f3b4b4; color:#8a1f1f; border-radius:9px;
+      padding:12px 14px; font-size:13.5px; margin:0 0 20px;}
+    .sub{counter-reset:sec; list-style:none; padding-left:0;}
+    footer{border-top:1px solid var(--line); margin-top:28px; padding-top:14px; font-size:13px; color:var(--muted);}
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="wrap"><span class="brand"><span class="snap">snap</span><span class="v">v</span><span class="oice">oice</span></span></div>
+  </div>
+
+  <main class="wrap">
+    <div class="card">
+      <h1>Allgemeine Geschäftsbedingungen (AGB)</h1>
+      <p class="muted">Stand: <span class="ph">[Datum]</span> · gilt ausschließlich gegenüber Unternehmern.</p>
+
+      <div class="draft">
+        <b>Entwurf — keine Rechtsberatung.</b> Diese AGB sind eine unverbindliche Vorlage und
+        <b>müssen vor Verwendung anwaltlich geprüft und an Ihr konkretes Angebot, Ihre Rechtsform
+        und Ihre Preise angepasst werden.</b> Alle gelb markierten Felder ausfüllen.
+      </div>
+
+      <h2>§ 1 Geltungsbereich</h2>
+      <p>(1) Diese AGB gelten für alle Verträge über die Nutzung der von
+        <span data-prot="name">[Anbieter — nur mit aktiviertem JavaScript sichtbar]</span> („Anbieter") unter <b>snapvoice</b> bereitgestellten
+        Programmierschnittstelle (API) zur Validierung und Erzeugung elektronischer Rechnungen
+        (XRechnung/ZUGFeRD) sowie zugehöriger Leistungen.</p>
+      <p>(2) Das Angebot richtet sich <b>ausschließlich an Unternehmer</b> i. S. d. § 14 BGB,
+        juristische Personen des öffentlichen Rechts und öffentlich-rechtliche Sondervermögen.
+        Verbraucher i. S. d. § 13 BGB sind ausgeschlossen.</p>
+      <p>(3) Abweichende Bedingungen des Kunden werden nicht Vertragsbestandteil, auch wenn ihnen
+        nicht ausdrücklich widersprochen wird.</p>
+
+      <h2>§ 2 Vertragsgegenstand / Leistung</h2>
+      <p>(1) Der Anbieter stellt eine HTTP-API bereit, über die der Kunde elektronische Rechnungen
+        gegen den offiziellen KoSIT-Validator prüfen (<i>/validate</i>) sowie aus strukturierten
+        Daten konforme XRechnungen erzeugen lassen kann (<i>/generate</i>).</p>
+      <p>(2) Die Verarbeitung erfolgt <b>zero-retention</b>: Rechnungsinhalte werden nur im
+        Arbeitsspeicher verarbeitet und nicht gespeichert; persistiert werden ausschließlich
+        Metadaten (u. a. Zeitstempel, Hashes, Prüfergebnis, Versionsstände).</p>
+      <p>(3) Eine bestimmte Beschaffenheit wird nur bei ausdrücklicher schriftlicher Zusage
+        geschuldet. Leistungsbeschreibungen sind keine Garantien.</p>
+
+      <h2>§ 3 Vertragsschluss, Zugang, API-Keys</h2>
+      <p>(1) Der Vertrag kommt durch <span class="ph">[Bestellung/Freischaltung/Auftragsbestätigung]</span>
+        zustande. Der Zugang erfolgt über einen oder mehrere API-Keys.</p>
+      <p>(2) Der Kunde hält seine API-Keys geheim, gibt sie nicht an Dritte weiter und verantwortet
+        jede über seine Keys erfolgende Nutzung. Bei Verdacht auf Missbrauch ist der Anbieter
+        unverzüglich zu informieren; der Anbieter darf betroffene Keys sperren.</p>
+
+      <h2>§ 4 Kontingente (Credits), Preise, Zahlung</h2>
+      <p>(1) Die Nutzung erfolgt auf Basis von Kontingenten („Credits"): Jeder API-Key berechtigt zu
+        <span class="ph">[Anzahl, z. B. 120]</span> Abfragen. Verbrauchte Credits werden nicht erstattet.</p>
+      <p>(2) Es gelten die Preise gemäß <span class="ph">[Preisliste/Angebot]</span>, jeweils zzgl.
+        gesetzlicher USt. Zahlung <span class="ph">[Zahlungsweise/-frist]</span>.</p>
+      <p>(3) Der Anbieter kann Keys bei Zahlungsverzug nach Mahnung sperren.</p>
+
+      <h2>§ 5 Verfügbarkeit, Wartung</h2>
+      <p>(1) Der Anbieter bemüht sich um hohe Verfügbarkeit, schuldet jedoch außerhalb ausdrücklich
+        vereinbarter SLAs keine bestimmte Verfügbarkeit. Wartungsfenster, höhere Gewalt und Störungen
+        Dritter (z. B. Hosting, Vorleistungen) liegen außerhalb des Einflussbereichs.</p>
+      <p>(2) <span class="ph">[Optionales SLA: z. B. 99,x % im Monatsmittel, Messung, Gutschriften]</span></p>
+
+      <h2>§ 6 Pflichten und Verantwortung des Kunden</h2>
+      <p>(1) Der Kunde ist allein verantwortlich für die inhaltliche, rechtliche und steuerliche
+        Richtigkeit seiner Rechnungen sowie für deren Aufbewahrung und Übermittlung an Empfänger
+        und Behörden.</p>
+      <p>(2) Der Kunde nutzt die API nicht missbräuchlich (insb. keine unzulässigen Mengen, kein
+        Reverse Engineering, keine rechtswidrigen Inhalte) und beachtet die technische Dokumentation.</p>
+
+      <h2>§ 7 Gewährleistung und Haftung</h2>
+      <p>(1) Die API prüft gegen den KoSIT-Validator. Der Anbieter <b>garantiert weder die Annahme
+        einer Rechnung durch Empfänger oder Behörden noch deren steuerrechtliche Anerkennung</b> und
+        leistet keine Rechts- oder Steuerberatung.</p>
+      <p>(2) Der Anbieter haftet unbeschränkt bei Vorsatz und grober Fahrlässigkeit, bei Schäden aus
+        der Verletzung von Leben, Körper oder Gesundheit sowie nach dem Produkthaftungsgesetz.</p>
+      <p>(3) Bei leicht fahrlässiger Verletzung wesentlicher Vertragspflichten (Kardinalpflichten)
+        ist die Haftung auf den vertragstypisch vorhersehbaren Schaden begrenzt
+        <span class="ph">[ggf. Höchstbetrag, z. B. die im Schadensjahr gezahlte Vergütung]</span>.
+        Im Übrigen ist die Haftung für leichte Fahrlässigkeit ausgeschlossen.</p>
+      <p>(4) Eine weitergehende Haftung, insbesondere für entgangenen Gewinn und mittelbare Schäden,
+        ist im gesetzlich zulässigen Rahmen ausgeschlossen.</p>
+
+      <h2>§ 8 Datenschutz / Auftragsverarbeitung</h2>
+      <p>Soweit der Anbieter personenbezogene Daten im Auftrag des Kunden verarbeitet, schließen die
+        Parteien einen Auftragsverarbeitungsvertrag (AVV) gemäß Art. 28 DSGVO. Im Übrigen gilt die
+        Datenschutzerklärung unter <span class="ph">[Link Datenschutz]</span>.</p>
+
+      <h2>§ 9 Vertraulichkeit</h2>
+      <p>Die Parteien behandeln vertrauliche Informationen der jeweils anderen Partei vertraulich und
+        nutzen sie nur zur Vertragsdurchführung.</p>
+
+      <h2>§ 10 Laufzeit und Kündigung</h2>
+      <p>Laufzeit und Kündigungsfristen richten sich nach <span class="ph">[Vertrag/Tarif]</span>.
+        Das Recht zur außerordentlichen Kündigung aus wichtigem Grund bleibt unberührt.</p>
+
+      <h2>§ 11 Änderung der AGB</h2>
+      <p>Der Anbieter kann diese AGB mit Wirkung für die Zukunft ändern und informiert den Kunden
+        rechtzeitig in Textform. Widerspricht der Kunde nicht innerhalb von
+        <span class="ph">[Frist]</span>, gelten die geänderten AGB als angenommen; hierauf wird im
+        Änderungshinweis gesondert hingewiesen.</p>
+
+      <h2>§ 12 Schlussbestimmungen</h2>
+      <p>(1) Es gilt das Recht der Bundesrepublik Deutschland unter Ausschluss des UN-Kaufrechts.</p>
+      <p>(2) Ausschließlicher Gerichtsstand ist — soweit zulässig — <span class="ph">[Sitz des Anbieters]</span>.</p>
+      <p>(3) Sollten einzelne Bestimmungen unwirksam sein, bleibt der Vertrag im Übrigen wirksam.</p>
+
+      <footer>
+        <a href="https://api.snapvoice.de/playground">snapvoice API-Playground</a> ·
+        <a href="https://www.snapvoice.de/impressum.html">Impressum</a> ·
+        E-Rechnung als API · gehostet in Deutschland
+      </footer>
+    </div>
+
+    <p class="muted" style="font-size:12.5px; margin-top:14px;">
+      Hinweis (bitte vor Veröffentlichung entfernen): Entwurf ohne Gewähr. Vor Einsatz anwaltlich
+      prüfen lassen und alle gelb markierten Felder ausfüllen.
+    </p>
+  </main>
+  <script src="protect.js"></script>
+</body>
+</html>

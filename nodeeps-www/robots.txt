@@ -1,0 +1,28 @@
+# robots.txt — gehoert ins WURZELVERZEICHNIS der Domain:
+#   https://www.snapvoice.de/robots.txt   (NICHT "no-crawl.txt" — der Standard heisst robots.txt)
+#
+# Wichtig: robots.txt ist nur eine BITTE. Serioese Crawler (Google, Bing) befolgen sie,
+# E-Mail-Harvester und Schad-Bots ignorieren sie. Wer eine Seite NICHT in den
+# Suchergebnissen haben will, nutzt zusaetzlich <meta name="robots" content="noindex">
+# auf der Seite selbst (steht bereits in impressum.html / agb.html / datenschutz.html).
+
+User-agent: *
+Allow: /
+
+# --- So sperrt man ein ganzes Verzeichnis fuer (brave) Bots: ---
+# Disallow: /intern/
+
+# Hinweis zum Zusammenspiel: Wird eine Seite per "Disallow" gesperrt, kann der Crawler
+# das noindex-Meta NICHT mehr lesen. Fuer reines "nicht indexieren" daher NICHT
+# disallowen, sondern nur das noindex-Meta nutzen.
+
+# --- Optional: bekannte KI-/Trainings-Crawler aussperren (ebenfalls nur freiwillig) ---
+# User-agent: GPTBot
+# Disallow: /
+# User-agent: CCBot
+# Disallow: /
+# User-agent: Google-Extended
+# Disallow: /
+
+# Sitemap (falls vorhanden):
+# Sitemap: https://www.snapvoice.de/sitemap.xml

@@ -19,14 +19,14 @@ Validation uses the official [KoSIT validator](https://github.com/itplr-kosit/va
 ## API usage
 
 The public API requires an API key in the `X-API-Key` header (pilots get a key).
-Base URL of the demo: `https://api.codedbyme.de`.
+Base URL of the demo: `https://api.snapvoice.de`.
 
 ### Validate an XML invoice
 
 ```sh
 curl -H "X-API-Key: $API_KEY" \
   -F "file=@invoice.xml" \
-  https://api.codedbyme.de/validate
+  https://api.snapvoice.de/validate
 ```
 
 ### Validate a ZUGFeRD / Factur-X PDF
@@ -36,7 +36,7 @@ Same endpoint — the embedded XML is extracted automatically:
 ```sh
 curl -H "X-API-Key: $API_KEY" \
   -F "file=@invoice.pdf" \
-  https://api.codedbyme.de/validate
+  https://api.snapvoice.de/validate
 ```
 
 Example response:
@@ -65,7 +65,7 @@ An invalid document returns `"valid": false` with the failing rules in `errors[]
 ```sh
 curl -H "X-API-Key: $API_KEY" -H "Content-Type: application/json" \
   --data @invoice.json \
-  https://api.codedbyme.de/generate -o invoice.xml
+  https://api.snapvoice.de/generate -o invoice.xml
 ```
 
 Returns `application/xml` (the XRechnung CII-XML) on success. If the generated
@@ -126,7 +126,7 @@ only when `TEST_DATABASE_URL` points at a reachable Postgres.
 ## Run the full stack (server)
 
 ```sh
-cp .env.example .env     # then edit: set POSTGRES_PASSWORD and BOOTSTRAP_API_KEY
+cp .env.example .env     # then edit: set POSTGRES_PASSWORD and API_KEYS
 docker compose up -d --build
 ```
 
@@ -138,15 +138,18 @@ on the server that owns that domain (not localhost).
 
 | Env var | Used by | Default | Notes |
 |---|---|---|---|
-| `DATABASE_URL` | app | – | Postgres DSN. **Set ⇒ auth + logging on.** Unset ⇒ local open mode. |
-| `REDIS_URL` | app | – | Unset ⇒ rate limiting off (fail-open). |
+| `API_KEYS` | app | – | Sold keys, comma/space-separated (max 100). **Set ⇒ API secured (`X-API-Key` required).** Unset ⇒ open mode (local only). |
+| `CREDITS_PER_KEY` | app | `120` | Requests allowed per key (credit quota, counted in Redis). |
+| `PLAYGROUND_RATE_PER_MIN` | app | `30` | Anonymous per-IP limit on the `/playground` try-it page. |
+| `DATABASE_URL` | app | – | Postgres DSN. Set ⇒ Zero-Retention usage logging on. Unset ⇒ no logging. |
+| `REDIS_URL` | app | – | Unset ⇒ rate limiting + credit counting off (fail-open). |
 | `KOSIT_URL` | app | `http://kosit:8080` | Validator sidecar URL. |
-| `BOOTSTRAP_API_KEY` | app | – | If set, this key is ensured on startup. |
-| `RATE_LIMIT_PER_MIN` | app | `120` | Per-key fixed-window limit. |
 | `POSTGRES_PASSWORD` | postgres/app | `changeme` | **Override in `.env` for the server.** |
 
-API keys are stored only as SHA-256 hashes. For now keys are seeded via
-`BOOTSTRAP_API_KEY`; a create/revoke CLI is a planned follow-up.
+API keys live in `API_KEYS` (.env); each key allows `CREDITS_PER_KEY` requests,
+counted per key in Redis (only the SHA-256 of the key is stored). Generate a batch
+with [`gen-keys.sh`](gen-keys.sh). With `API_KEYS` empty the API runs open — always
+set keys in production.
 
 ---
 
@@ -155,14 +158,14 @@ API keys are stored only as SHA-256 hashes. For now keys are seeded via
 Edit locally, then sync + rebuild on the server (see [deploy.sh](deploy.sh)):
 
 ```sh
-./deploy.sh <ssh-user>                      # rsync to <user>@api.codedbyme.de:~/fintex/
-ssh <ssh-user>@api.codedbyme.de \
+./deploy.sh <ssh-user>                      # rsync to <user>@api.snapvoice.de:~/fintex/
+ssh <ssh-user>@api.snapvoice.de \
   'cd ~/fintex && docker compose up -d --build'
 ```
 
-`deploy.sh` excludes `.git`, `.venv`, `.env`, caches and `instructions/`. The server keeps
-its own `.env` (with the real `POSTGRES_PASSWORD` / `BOOTSTRAP_API_KEY`) — it is **not**
-overwritten by the sync.
+`deploy.sh` excludes `.git`, `.venv`, `.env`, `keys.txt`, caches and `instructions/`. The
+server keeps its own `.env` (with the real `POSTGRES_PASSWORD` / `API_KEYS`) — it is
+**not** overwritten by the sync.
 
 ---
 

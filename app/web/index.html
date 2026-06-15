@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>snapvoice — API-Playground</title>
+  <meta name="description" content="E-Rechnung validieren und erzeugen — XRechnung & ZUGFeRD per API. Gehostet in Deutschland, Zero-Retention.">
+  <link rel="icon" href="/playground/static/snapvoice-logo.png">
+  <link rel="stylesheet" href="/playground/static/app.css">
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="wrap topbar-in">
+      <img class="logo" src="/playground/static/snapvoice-logo.png" alt="snapvoice">
+      <span class="topbar-tag">API-Playground</span>
+    </div>
+  </header>
+
+  <div class="account">
+    <div class="wrap account-in">
+      <label class="acc-lbl" for="apikey">API-Key</label>
+      <input id="apikey" class="acc-input" type="text" autocomplete="off" spellcheck="false"
+             placeholder="API-Key einfügen — schaltet 120 Credits frei">
+      <span id="acc-status" class="acc-status"></span>
+      <span id="acc-credits" class="acc-credits">Verbrauchte Credits: –/120</span>
+    </div>
+  </div>
+
+  <section class="hero">
+    <div class="wrap">
+      <h1>E-Rechnung. Geprüft und erzeugt. Per API.</h1>
+      <p class="lead">XRechnung und ZUGFeRD validieren und erstellen — gehostet in
+        Deutschland, in Ihre Software integriert, in Minuten startklar. Testen Sie die
+        beiden Endpunkte hier direkt im Browser — mit unseren Testdaten oder Ihren eigenen.
+        Dazu brauchen Sie einen API-Key; einen kostenlosen Test-Key erhalten Sie auf Anfrage
+        unter <a href="mailto:info@snapvoice.de">info@snapvoice.de</a>.</p>
+      <div class="badges">
+        <span class="badge">🇩🇪 In Deutschland gehostet</span>
+        <span class="badge">✓ Offizieller KoSIT-Validator</span>
+        <span class="badge">🔒 Zero-Retention</span>
+      </div>
+    </div>
+  </section>
+
+  <main class="wrap">
+    <div class="tabs" role="tablist">
+      <button class="tab is-active" id="tab-validate" data-panel="panel-validate" role="tab">/validate — Rechnung prüfen</button>
+      <button class="tab" id="tab-generate" data-panel="panel-generate" role="tab">/generate — Rechnung erzeugen</button>
+    </div>
+
+    <!-- ===================== VALIDATE ===================== -->
+    <section class="panel is-active" id="panel-validate" role="tabpanel">
+      <p class="muted">XML oder ZUGFeRD/Factur-X-<b>PDF</b> rein — sauberer Prüfbericht
+        raus: gültig oder nicht, mit Regelcodes und Fundstelle.</p>
+
+      <div class="field">
+        <label class="lbl">Beispiel laden</label>
+        <div class="chips" id="validate-samples">
+          <button class="chip" data-key="ubl-valid">XRechnung UBL · gültig</button>
+          <button class="chip" data-key="cii-valid">XRechnung CII · gültig</button>
+          <button class="chip" data-key="ubl-invalid">UBL · ungültig (Leitweg-ID fehlt)</button>
+          <button class="chip" data-key="facturx-pdf">Factur-X-PDF · gültig</button>
+          <button class="chip" data-key="plain-pdf">PDF ohne E-Rechnung</button>
+        </div>
+        <p class="hint" id="validate-loaded"></p>
+      </div>
+
+      <div class="field">
+        <label class="lbl" for="validate-xml">Eigenes XML einfügen</label>
+        <textarea id="validate-xml" spellcheck="false" placeholder="<?xml version=&quot;1.0&quot;?> … oder ein Beispiel oben laden"></textarea>
+      </div>
+
+      <div class="field">
+        <label class="lbl" for="validate-file">…oder eigene Datei hochladen (XML / PDF)</label>
+        <input type="file" id="validate-file" accept=".xml,.pdf,application/xml,text/xml,application/pdf">
+      </div>
+
+      <div class="actions">
+        <button class="btn" id="validate-run" disabled>Prüfen →</button>
+        <button class="btn ghost" id="validate-reset" type="button">Zurücksetzen</button>
+      </div>
+
+      <div class="result" id="validate-result" hidden></div>
+    </section>
+
+    <!-- ===================== GENERATE ===================== -->
+    <section class="panel" id="panel-generate" role="tabpanel">
+      <p class="muted">Strukturierte Daten (JSON) rein — fertige, <b>geprüfte</b>
+        XRechnung-CII raus. Jede erzeugte Rechnung wird vorab selbst validiert: nur
+        gültige Rechnungen verlassen die API.</p>
+
+      <div class="field">
+        <label class="lbl">Beispiel</label>
+        <div class="chips">
+          <button class="chip" id="generate-load">Beispiel-Rechnung laden</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="lbl" for="generate-json">Rechnungs-JSON</label>
+        <textarea id="generate-json" class="mono" spellcheck="false" placeholder='{ "invoice_number": "RE-2026-0001", … }'></textarea>
+      </div>
+
+      <div class="actions">
+        <button class="btn" id="generate-run" disabled>Erzeugen →</button>
+        <button class="btn ghost" id="generate-reset" type="button">Leeren</button>
+      </div>
+
+      <div class="result" id="generate-result" hidden></div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div class="wrap foot-in">
+      <span><img class="flogo" src="/playground/static/snapvoice-logo-light.png" alt="snapvoice"> · E-Rechnung als API · gehostet in Deutschland</span>
+      <span class="muted small">
+        <a href="mailto:info@snapvoice.de">info@snapvoice.de</a> ·
+        <a href="https://www.snapvoice.de/impressum.html" target="_blank" rel="noopener">Impressum</a> ·
+        <a href="https://www.snapvoice.de/agb.html" target="_blank" rel="noopener">AGB</a> ·
+        <a href="https://www.snapvoice.de/datenschutz.html" target="_blank" rel="noopener">Datenschutz</a> ·
+        Zero-Retention: nie gespeichert.
+      </span>
+    </div>
+  </footer>
+
+  <script src="/playground/static/app.js"></script>
+</body>
+</html>

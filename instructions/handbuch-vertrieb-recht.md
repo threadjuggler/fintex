@@ -73,13 +73,13 @@ Internet ──▶ Caddy (TLS) ──▶ App (FastAPI) ──▶ KoSIT-Validator
 ## 1.5 Integration beim Kunden (so einfach ist es)
 
 1. Kunde bekommt einen API-Key.
-2. HTTPS-Request gegen `https://api.codedbyme.de/validate` bzw. `/generate`.
+2. HTTPS-Request gegen `https://api.snapvoice.de/validate` bzw. `/generate`.
 3. Antwort als JSON (validate) bzw. als XML-Datei (generate).
 
 Selbst-Test, den du jedem geben kannst:
 
 ```sh
-curl -H "X-API-Key: <key>" -F "file=@rechnung.xml" https://api.codedbyme.de/validate
+curl -H "X-API-Key: <key>" -F "file=@rechnung.xml" https://api.snapvoice.de/validate
 ```
 
 ## 1.6 FAQ — typische Kundenfragen + gute Antworten
@@ -291,6 +291,52 @@ gewichten (z. B. 1 generate = 3 Dokumente).
 - Sinnvolle **Versicherungen**: Berufs-/Betriebshaftpflicht, **Cyber-/Vermögensschaden**?
 - Beweislast im Streitfall — reicht meine **Reproduzierbarkeit** (Input-/Output-Hash +
   Versionspins) als Nachweis „diese Eingabe ergab dieses Ergebnis"?
+
+### 5.2.1 Arbeitsthese zur Haftung (anwaltlich gegenzuprüfen)
+
+> Eigene Argumentation, **noch nicht** rechtlich bestätigt. Ziel der Prüfung: Hält die
+> Konstruktion „treue Ausführung statt Richtigkeitsgarantie" vor Gericht und in den AGB?
+
+- **Kernidee — zwei Bedeutungen von „Richtigkeit" trennen:**
+  1. *Inhaltliche Richtigkeit der Regeln* („das Urteil des Validators ist juristisch
+     korrekt") → **niemals garantieren**. Das sind die offiziellen Regeln des Bundes
+     (KoSIT/EN 16931), nicht meine; selbst die KoSIT schließt dafür jede Gewähr aus.
+     Diese Pflicht wäre unbegrenzt und faktisch unversicherbar.
+  2. *Korrekte Ausführung* („ich habe den offiziellen KoSIT-Validator vX mit Config vY
+     gegen genau diese Eingabe ausgeführt, das ist das Ergebnis") → **garantierbar und
+     beweisbar**. Begrenzte, prüfbare, versicherbare Pflicht.
+  → Vertraglich auf **(2)** festlegen, **(1)** ausdrücklich ausschließen.
+- **Warum (2) risikoarm ist:**
+  - KoSIT-Validator ist die **offizielle Referenzimplementierung** — Behörde/Empfänger
+    prüfen gegen dieselbe Norm, bekommen dasselbe Ergebnis. Kein eigenes, divergierendes
+    Urteil → gegenüber dem Standard kaum „falsch" möglich.
+  - **Reproduzierbarkeit als Haftungsschild** (Input-/Output-Hash + gepinnte Validator-/
+    Config-Version): verschiebt die Frage von „War die Antwort richtig?" (unbegrenzt) zu
+    „Wurde das offizielle Tool treu ausgeführt?" (begrenzt, beweisbar). Vgl. 5.2 oben.
+  - Geprüft wird **Format** (EN 16931 / XRechnung-Konformität), **nicht** die steuerliche/
+    materielle Richtigkeit (z. B. Vorsteuerabzug). Muss in Leistungsbeschreibung + AGB
+    explizit stehen (Anknüpfung an 5.1).
+- **Hebel fürs Restrisiko:**
+  - **Leistung eng definieren:** „konforme Ausführung des offiziellen Validators in
+    Version X/Config Y", *keine* Rechtskonformitäts- oder Akzeptanzgarantie.
+  - **Disclaimer:** keine Steuer-/Rechtsberatung; Aufbewahrung + Datenrichtigkeit bleiben
+    Kundenpflicht (Anknüpfung an 5.4).
+  - **Haftungsbegrenzung (B2B):** Cap z. B. auf Jahresgebühr, Ausschluss Folge-/indirekter
+    Schäden + entgangenem Gewinn. Grenzen (nicht ausschließbar): Vorsatz, grobe
+    Fahrlässigkeit, Leben/Körper/Gesundheit, ProdHaftG (§§ 276, 307, 309 Nr. 7 BGB); bei
+    leichter Fahrlässigkeit an Kardinalpflichten nur Begrenzung auf vertragstypisch
+    vorhersehbaren Schaden. **← Hauptpunkt der anwaltlichen Prüfung.**
+  - **Versicherung:** Vermögensschaden-/Berufshaftpflicht für Restrisiko nach Cap (vgl.
+    5.2). Cap + PI ist Standard-Setup eines IT-Dienstleisters.
+  - **Versionstransparenz im Response:** verwendete Validator-/Config-Version stets
+    mitliefern → Kunde/Empfänger kann reproduzieren.
+- **Realistisches Schadensszenario:** Worst Case „gültig gemeldet, war's nicht" → Empfänger
+  lehnt ab → Neuausstellung, Verzug. Bei treuer Ausführung kaum möglich (Empfänger prüft
+  gegen dieselbe Norm). False-Negative → Zeitverlust, geringer Schaden.
+- **Fazit (zu bestätigen):** Die Pflicht „treue Ausführung an gepinnten Versionen +
+  Nachweis" ist begrenzt, beweisbar und durch die Architektur bereits abgedeckt. Mit
+  B2B-Haftungscap + PI-Versicherung normales IT-Service-Risiko — **nicht** das große Risiko
+  der naiven „Richtigkeitsgarantie".
 
 ## 5.3 Datenschutz (DSGVO)
 
